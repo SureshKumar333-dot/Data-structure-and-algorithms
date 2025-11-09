@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX 100
+
+typedef struct {
+    int top;
+    char items[MAX];
+} Stack;
+
+// Function prototypes
+void initstack(Stack *s);
+void push(Stack *s, char c);
+char pop(Stack *s);
+char peek(Stack *s);
+int isfull(Stack *s);
+int isempty(Stack *s);
+int precedence(char c);
+void infixtopostfix(char *infix, char *postfix);
+
+int main() {
+    char infix[MAX], postfix[MAX];
+    printf("Enter an infix expression:\n");
+    fgets(infix, MAX, stdin); // allows spaces in input
+    // Remove trailing newline if present
+    size_t len = strlen(infix);
+    if (len > 0 && infix[len - 1] == '\n') {
+        infix[len - 1] = '\0';
+    }
+    infixtopostfix(infix, postfix);
+    printf("Postfix expression: %s\n", postfix);
+    return 0;
+}
+
+void initstack(Stack *s) {
+    s->top = -1;
+}
+
+void push(Stack *s, char c) {
+    if (s->top < MAX - 1) {
+        s->items[++(s->top)] = c;
+    }
+}
+
+char pop(Stack *s) {
+    if (!isempty(s)) {
+        return s->items[(s->top)--];
+    }
+    return '\0';
+}
+
+char peek(Stack *s) {
+    if (!isempty(s)) {
+        return s->items[s->top];
+    }
+    return '\0';
+}
+
+int isfull(Stack *s) {
+    return (s->top == MAX - 1);
+}
+
+int isempty(Stack *s) {
+    return (s->top == -1);
+}
+
+int precedence(char c) {
+    if (c == '^')
+        return 3;
+    else if (c == '*' || c == '/')
+        return 2;
+    else if (c == '+' || c == '-')
+        return 1;
+    else
+        return -1;
+}
+
+void infixtopostfix(char *infix, char *postfix) {
+    Stack stack;
+    initstack(&stack);
+    int k = 0;
+    int i;
+    for (i = 0; infix[i] != '\0'; i++) {
+        char c = infix[i];
+        if (isalnum(c)) { // operand
+            postfix[k++] = c;
+        } else if (c == '(') {
+            push(&stack, c);
+        } else if (c == ')') {
+            while (!isempty(&stack) && peek(&stack) != '(') {
+                postfix[k++] = pop(&stack);
+            }
+            if (!isempty(&stack)) {
+                pop(&stack); // pop '('
+            }
+        } else if (c == ' ') {
+            continue; // skip spaces
+        } else { // operator
+            while (!isempty(&stack) && precedence(peek(&stack)) >= precedence(c)) {
+                postfix[k++] = pop(&stack);
+            }
+            push(&stack, c);
+        }
+    }
+    while (!isempty(&stack)) {
+        postfix[k++] = pop(&stack);
+    }
+    postfix[k] = '\0';
+}
