@@ -1,0 +1,80 @@
+#include <stdio.h>
+int linearsearch(int arr[], int size, int val) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == val)
+            return i;
+    }
+    return -1;
+}
+
+int binarysearch(int arr[], int size, int val) {
+    int left = 0, right = size - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == val)
+            return mid;
+        if (arr[mid] < val)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return -1;
+}
+
+void sort(int arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    int size, choice, val, pos;
+    printf("Enter number of elements: ");
+    scanf("%d", &size);
+    int arr[size];
+    printf("Enter elements for array: ");
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+    do {
+        printf("\n======= Menu for search =======\n");
+        printf("1. Linear Search\n");
+        printf("2. Binary Search\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter value to search: ");
+                scanf("%d", &val);
+                pos = linearsearch(arr, size, val);
+                if (pos != -1)
+                    printf("Element %d found at index %d\n", val, pos);
+                else
+                    printf("Element %d not found in array\n", val);
+                break;
+            case 2:
+                sort(arr, size);
+                printf("Enter value to search: ");
+                scanf("%d", &val);
+                pos = binarysearch(arr, size, val);
+                if (pos != -1)
+                    printf("Element %d found at index %d\n", val, pos);
+                else
+                    printf("Element %d not found in array\n", val);
+                break;
+            case 3:
+                printf("Exiting the program...\n");
+                break;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    } while (choice != 3);
+    return 0;
+}
