@@ -1,0 +1,149 @@
+#include<stdio.h>
+#define MAX 5
+
+int queue[MAX];
+int front = -1, rear = -1;
+
+//function to ccheck queue is empty
+int isempty(){
+    return (front == -1);
+}
+
+//function to check queue is full
+int isfull(){
+    return (rear == MAX -1);
+}
+
+//function to size of queue
+int size(){
+    if(isempty()){
+        return 0;
+    }
+    return (rear - front +1);
+}
+
+//function for display front element
+void frontqueue(){
+    printf("Front element is: %d\n",queue[front]);
+    return;
+}
+
+//function for add an element in queue
+void enqueue(int val){
+    if(isfull()){
+        printf("Over flow! queue is full.\n");
+        return;
+    }
+    if(isempty()){
+        front = 0;
+    }
+    rear++;
+    queue[rear] = val;
+    printf("%d Enqueued to queue.\n",val);
+}
+
+//function for delete an element in queue
+void dequeue(){
+    if(isempty()){
+        printf("Under flow! Queue is empty.\n");
+        return;
+    }
+    printf("%d deleted from queue.\n",queue[front]);
+    if(front==rear){
+        front=rear=-1;
+    }else{
+        front++;
+    }
+}
+//function for display an element in queue
+void displayqueue(){
+    if(isempty()){
+            printf("Queue is empty.\n");
+            return;
+    }printf("Queue elements: ");
+    for(int i=front;i<=rear;i++){
+        printf("%d->",queue[i]);
+    }
+    printf("NULL");
+    printf("\n");
+}
+
+//function for reverse the queue
+void reversequeue(){
+    if(isempty()){
+            printf("Queue is empty.\n");
+            return;
+    }printf("Queue reverse elements: ");
+    for(int i=rear;i>=front;i--){
+        printf("%d->",queue[i]);
+    }
+    printf("NULL");
+    printf("\n");
+}
+
+//main function for queue
+int main() {
+    int choice, val;
+
+    do {
+        printf("\n---------Menu----------\n");
+        printf("1. Enqueue\n");
+        printf("2. Dequeue\n");
+        printf("3. Front\n");
+        printf("4. Is Empty\n");
+        printf("5. Is Full\n");
+        printf("6. Size\n");
+        printf("7. Display\n");
+        printf("8. Reverse\n");
+        printf("9. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to add: ");
+                scanf("%d", &val);
+                enqueue(val);
+                displayqueue();
+                break;
+            case 2:
+                dequeue();
+                dequeue();
+                displayqueue();
+                break;
+            case 3:
+                frontqueue();
+                break;
+            case 4:
+                if(isempty()){
+                    printf("Queue is Empty.\n");
+                }else{
+                    printf("Queue is not Empty.\n ");
+                }
+                break;
+            case 5:
+                if(isfull()){
+                    printf("Queue is full.\n");
+                }else{
+                    printf("Queue is not full.\n");
+                }
+                break;
+            case 6:
+                printf("Size of the queue is: %d\n",size());
+                break;
+            case 7:
+                displayqueue();
+                break;
+            case 8:
+                reversequeue();
+                break;
+            case 9:
+                printf("Exiting the program...\n");
+                break;
+            default:
+                printf("Enter correct choice\n");
+        }
+    } while (choice != 8);
+
+    return 0;
+}
