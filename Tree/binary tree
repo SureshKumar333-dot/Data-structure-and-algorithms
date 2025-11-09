@@ -1,0 +1,155 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+
+struct node {
+    int key;
+    struct node* left;
+    struct node* right;
+};
+
+// Function to create a new node
+struct node* createnode(int key) {
+    struct node* newnode = (struct node*)malloc(sizeof(struct node));
+    if(!newnode) {
+        printf("Memory allocation failed.\n");
+        return NULL;
+    }
+    newnode->key = key;
+    newnode->left = NULL;
+    newnode->right = NULL;
+    printf("Node created successfully.\n");
+    return newnode;
+}
+
+// Function to insert node in the tree at first available position (level order)
+void insertnode(struct node** root, int key) {
+    struct node* newnode = createnode(key);
+    if(!newnode) {
+        return;
+    }
+
+    if(*root == NULL) {
+        *root = newnode;
+        printf("Node %d is inserted as root.\n", key);
+        return;
+    }
+
+    struct node* queue[100];
+    int front = 0, rear = 0;
+    queue[rear++] = *root;
+
+    while(front < rear) {
+        struct node* temp = queue[front++];
+        if(temp->left == NULL) {
+            temp->left = newnode;
+            printf("Node %d inserted to left.\n", key);
+            return;
+        } else {
+            queue[rear++] = temp->left;
+        }
+
+        if(temp->right == NULL) {
+            temp->right = newnode;
+            printf("Node %d inserted to right.\n", key);
+            return;
+        } else {
+            queue[rear++] = temp->right;
+        }
+    }
+}
+
+//function for preorder in tree
+void preorder(struct node* root){
+    if(!root){
+        return;
+    }
+    printf("%d",root->key);
+    preorder(root->left);
+    preorder(root->right);
+}
+
+//function for inorder in tree
+void inorder(struct node* root){
+    if(!root){
+        return;
+    }
+    inorder(root->left);
+    printf("%d",root->key);
+    inorder(root->right);
+}
+
+//function for inorder in tree
+void postorder(struct node* root){
+    if(!root){
+        return;
+    }
+    postorder(root->left);
+    postorder(root->right);
+    printf("%d",root->key);
+}
+
+//function for search in tree
+bool search(struct node* root,int key){
+    if(!root){
+        return false;
+    }
+    if(root->key == key){
+        return true;
+    }
+    return (search(root->left,key)||search(root->right,key));
+}
+
+int main() {
+    struct node* root = NULL;
+    int choice, key;
+
+    do {
+        printf("\n---------Menu of binary tree----------\n");
+        printf("1. Insert node\n");
+        printf("2. Preorder traversal\n");
+        printf("3. Inorder traversal\n");
+        printf("4. Postorder traversal\n");
+        printf("5. Search for value\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter value to insert: ");
+                scanf("%d", &key);
+                insertnode(&root, key);
+                break;
+            case 2:
+                printf("Preorder traversal: ");
+                preorder(root);
+                break;
+            case 3:
+                printf("Inorder traversal: ");
+                inorder(root);
+                break;
+            case 4:
+                printf("Postorder traversal: ");
+                postorder(root);
+                break;
+            case 5:
+                printf("Enter the value to search: ");
+                scanf("%d",&key);
+                if(search(root,key)){
+                    printf("%d found in the tree.",key);
+                }
+                else{
+                    printf("%d not found in the tree.",key);
+                }
+                break;
+            case 6:
+                printf("Exiting the program...\n");
+                break;
+            default:
+                printf("Enter correct choice\n");
+        }
+    } while(choice != 6);
+
+    return 0;
+}
