@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void printarray(int* arr, int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);  // Added space for clarity
+    }
+    printf("\n");
+}
+
+void merge(int* arr, int beg, int mid, int end) {
+    int i = beg;
+    int j = mid + 1;
+    int index = 0;
+    int size = end - beg + 1;
+    int* temp = (int*)malloc(size * sizeof(int));
+
+    while (i <= mid && j <= end) {
+        if (arr[i] < arr[j]) {
+            temp[index++] = arr[i++];
+        } else {
+            temp[index++] = arr[j++];
+        }
+    }
+    while (i <= mid) {
+        temp[index++] = arr[i++];
+    }
+    while (j <= end) {
+        temp[index++] = arr[j++];
+    }
+
+    for (int k = 0; k < size; k++) {
+        arr[beg + k] = temp[k];
+    }
+    free(temp);
+}
+
+void mergesort(int* arr, int beg, int end) {
+    if (beg < end) {
+        int mid = (beg + end) / 2;
+        mergesort(arr, beg, mid);
+        mergesort(arr, mid + 1, end);
+        merge(arr, beg, mid, end);
+    }
+}
+
+int main() {
+    int size;
+    printf("Enter the number of elements: ");
+    scanf("%d", &size);
+
+    int* arr = (int*)calloc(size, sizeof(int));
+
+    printf("Enter the elements: ");
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+    mergesort(arr, 0, size - 1);
+    for(int i = 0; i < size; i++){
+        printf("Original array: %d",arr[i]);
+    }
+
+    printf("Sorted array: ");
+    printarray(arr, size);
+
+    free(arr);
+    return 0;
+}
