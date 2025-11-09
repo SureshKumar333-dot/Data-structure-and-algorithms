@@ -1,0 +1,127 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 100
+
+int top = -1;
+int stack[MAX];
+
+// Function prototypes
+void Push(int val);
+void Pop();
+void Peek();
+int Isempty();
+int Isfull();
+int Size();
+void Display();
+
+int main() {
+    int choice, val;
+
+    do {
+        printf("\n---------Menu----------\n");
+        printf("1. Push\n");
+        printf("2. Pop\n");
+        printf("3. Peek\n");
+        printf("4. Is Empty\n");
+        printf("5. Is Full\n");
+        printf("6. Size\n");
+        printf("7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to push: ");
+                scanf("%d", &val);
+                Push(val);
+                Display();
+                break;
+            case 2:
+                Pop();
+                Display();
+                break;
+            case 3:
+                //Peek();
+                break;
+            case 4:
+                if(Isempty()){
+                    printf("Stack is Empty.\n");
+                }else{
+                    printf("stack is not Empty.\n ");
+                }
+                break;
+            case 5:
+                if(Isfull()){
+                    printf("Stack is full.\n");
+                }else{
+                    printf("Stack is not full.\n");
+                }
+                break;
+            case 6:
+                printf("Size of the stack is: %d\n",Size());
+                break;
+            case 7:
+                printf("Exiting the program...\n");
+                break;
+            default:
+                printf("Enter correct choice\n");
+        }
+    } while (choice != 7);
+
+    return 0;
+}
+
+void Push(int val) {
+    if (Isfull()) {
+        printf("%d value cannot be pushed, the stack is full\n", val);
+        return;
+    } else {
+        top++;
+        stack[top] = val;
+        printf("%d Value pushed in stack\n", val);
+    }
+}
+
+void Pop(){
+    if(Isempty()){
+        printf("\nUnder flow of the stack so can't be deleted.");
+        return;
+    }
+    else{
+        printf("\n%d The top element is deleted.",stack[top]);
+        top--;
+    }
+}
+
+void Display(){
+    if(Isempty()){
+        printf("Stack Element is : Empty\n");
+        return;
+    }
+    printf("Stack elements: ");
+    for(int i=0;i<=top;i++){
+        printf("%d",stack[i]);
+    }
+
+    printf("\n");
+}
+
+void Peek() {
+    if (Isempty()) {
+        printf("Stack is empty, no top element\n");
+    } else {
+        printf("Top element is %d\n", stack[top]);
+    }
+}
+
+int Isfull() {
+    return (top == MAX - 1);
+}
+
+int Isempty(){
+    return (top == -1);
+}
+
+int Size(){
+    return (top+1);
+}
