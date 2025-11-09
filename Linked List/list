@@ -1,0 +1,256 @@
+#include <stdio.h>
+#define MAXSIZE 100
+
+typedef struct {
+    int list[MAXSIZE];
+    int size;
+    int capacity;
+} ArrayList;
+
+ArrayList initlist(int cap);
+void createList(ArrayList *a1);
+void display(const ArrayList *a1);
+void insertBeg(ArrayList *a1, int val);
+void insertEnd(ArrayList *a1, int val);
+void insertAtPos(ArrayList *a1, int val, int pos);
+void deleteBeg(ArrayList *a1);
+void deleteEnd(ArrayList *a1);
+void deleteAtPos(ArrayList *a1, int pos);
+void search(const ArrayList *a1, int val);
+
+int main()
+{
+    ArrayList a1 = initlist(MAXSIZE);
+    int choice, val, pos;
+    char cont = 'y';
+
+    while(cont == 'y' || cont == 'Y') {
+        //menu of operations
+        printf("\n\n ==== MENU ====");
+        printf("\n 1. Create a list");
+        printf("\n 2. Insertion at the Beginning of the list");
+        printf("\n 3. Insertion at the End of the list");
+        printf("\n 4. Insertion at the Specified Position");
+        printf("\n 5. Deletion at the Beginning of the list");
+        printf("\n 6. Deletion at the End of the list");
+        printf("\n 7. Deletion at the Specified Position");
+        printf("\n 8. Search ");
+        printf("\n 9. Display");
+        printf("\n 10. Exit ");
+
+        printf("\n\n Enter Your Choice : ");
+        scanf("%d", &choice);
+
+        switch(choice)
+        {
+            case 1:
+                createList(&a1);
+                break;
+            case 2:
+                printf("\n Enter value to insert at beginning: ");
+                scanf("%d", &val);
+                insertBeg(&a1, val);
+                break;
+            case 3:
+                printf("\n Enter value to insert at ending: ");
+                scanf("%d", &val);
+                insertEnd(&a1, val);
+                break;
+            case 4:
+                printf("\n Enter value to insert: ");
+                scanf("%d", &val);
+                printf(" Enter position (1 to %d): ", a1.size+1);
+                scanf("%d", &pos);
+                insertAtPos(&a1, val, pos);
+                break;
+            case 5:
+                deleteBeg(&a1);
+                break;
+            case 6:
+                deleteEnd(&a1);
+                break;
+            case 7:
+                printf(" Enter position to delete (1 to %d): ", a1.size);
+                scanf("%d", &pos);
+                deleteAtPos(&a1, pos);
+                break;
+            case 8:
+                printf("\n Enter value to search: ");
+                scanf("%d", &val);
+                search(&a1, val);
+                break;
+            case 9:
+                display(&a1);
+                break;
+            case 10:
+                printf("\n Exiting the Program...\n");
+                return 0;
+            default:
+                printf("\n Invalid Choice ");
+        }
+
+        printf("\n\n Do you want to continue? (y/n): ");
+        scanf(" %c", &cont);
+    }
+
+    return 0;
+}
+
+// initialize list
+ArrayList initlist(int cap) {
+    ArrayList a1;
+    if (cap > MAXSIZE) {
+        printf("\n Capacity exceeds maximum allowed size");
+        cap = MAXSIZE;
+    }
+    a1.size = 0;
+    a1.capacity = cap;
+    return a1;
+}
+
+// create list
+void createList(ArrayList *a1) {
+    int value;
+    a1->size = 0;
+    printf("\n Create the List (enter -1 to stop):");
+    while(1) {
+        printf("\n Enter the element: ");
+        scanf("%d", &value);
+        if(value == -1)
+            break;
+        if(a1->size == a1->capacity) {
+            printf("\n Overflow! Cannot insert more elements.");
+            break;
+        }
+        a1->list[a1->size] = value;
+        a1->size++;
+    }
+    printf("\n List created successfully");
+}
+
+// display list
+void display(const ArrayList *a1) {
+    if (a1->size == 0) {
+        printf("\n List is Empty");
+        return;
+    }
+
+    printf("\n Current List: ");
+    for(int i = 0; i < a1->size; i++) {
+        printf("%d ", a1->list[i]);
+    }
+    printf("\n");
+}
+
+// insertion at beginning
+void insertBeg(ArrayList *a1, int val) {
+    if(a1->size == a1->capacity) {
+        printf("\n Overflow! Cannot insert element.");
+        return;
+    }
+
+    for(int i = a1->size; i > 0; i--) {
+        a1->list[i] = a1->list[i-1];
+    }
+    a1->list[0] = val;
+    a1->size++;
+    printf("\n %d inserted at beginning successfully.", val);
+}
+
+// insertion at end
+void insertEnd(ArrayList *a1, int val) {
+    if(a1->size == a1->capacity) {
+        printf("\n Overflow! Cannot insert element.");
+        return;
+    }
+
+    a1->list[a1->size] = val; // directly put at last index
+    a1->size++;
+    printf("\n %d inserted at ending successfully.", val);
+}
+
+// insertion at specified position
+void insertAtPos(ArrayList *a1, int val, int pos) {
+    if(a1->size == a1->capacity) {
+        printf("\n Overflow! Cannot insert element.");
+        return;
+    }
+    if(pos < 1 || pos > a1->size+1) {
+        printf("\n Invalid position, Valid range is 1 to %d.", a1->size+1);
+        return;
+    }
+
+    for(int i = a1->size; i >= pos; i--) {
+        a1->list[i] = a1->list[i-1];
+    }
+    a1->list[pos-1] = val;
+    a1->size++;
+    printf("\n %d inserted at position %d successfully.", val, pos);
+}
+
+// deletion at beginning
+void deleteBeg(ArrayList *a1) {
+    if(a1->size == 0) {
+        printf("\n Underflow! List is empty.");
+        return;
+    }
+
+    int deleted = a1->list[0];
+    for(int i = 0; i < a1->size-1; i++) {
+        a1->list[i] = a1->list[i+1];
+    }
+    a1->size--;
+    printf("\n %d deleted from beginning successfully.", deleted);
+}
+
+// deletion at end
+void deleteEnd(ArrayList *a1) {
+    if(a1->size == 0) {
+        printf("\n Underflow! List is empty.");
+        return;
+    }
+
+    int deleted = a1->list[a1->size-1];
+    a1->size--;
+    printf("\n %d deleted from end successfully.", deleted);
+}
+
+// deletion at specified position
+void deleteAtPos(ArrayList *a1, int pos) {
+    if(a1->size == 0) {
+        printf("\n Underflow! List is empty.");
+        return;
+    }
+    if(pos < 1 || pos > a1->size) {
+        printf("\n Invalid position, Valid range is 1 to %d.", a1->size);
+        return;
+    }
+
+    int deleted = a1->list[pos-1];
+    for(int i = pos-1; i < a1->size-1; i++) {
+        a1->list[i] = a1->list[i+1];
+    }
+    a1->size--;
+    printf("\n %d deleted from position %d successfully.", deleted, pos);
+}
+
+// search function
+void search(const ArrayList *a1, int val) {
+    if (a1->size == 0) {
+        printf("\n List is Empty");
+        return;
+    }
+
+    int found = 0;
+    printf("\n Searching for %d -->", val);
+    for (int i = 0; i < a1->size; i++) {
+        if (a1->list[i] == val) {
+            printf("\n %d found at position %d", val, i+1);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("\n %d not found in the list", val);
+    }
+}
