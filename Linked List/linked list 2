@@ -1,0 +1,178 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node* next;
+};
+
+// Create list
+void createlist(struct node** head) {
+    int value;
+    struct node* newnode;
+    struct node* tail = NULL;
+    printf("Enter value to insert (-1 to stop):\n");
+    while (1) {
+        scanf("%d", &value);
+        if (value == -1) break;
+
+        newnode = (struct node*)malloc(sizeof(struct node));
+        if (newnode == NULL) {
+            printf("Failed to create node\n");
+            return;
+        }
+        newnode->data = value;
+        newnode->next = NULL;
+
+        if (*head == NULL) {
+            *head = tail = newnode;
+        } else {
+            tail->next = newnode;
+            tail = newnode;
+        }
+    }
+    printf("List created successfully\n");
+}
+
+// Traverse list
+void traverse(struct node* head) {
+    if (head == NULL) {
+        printf("Current List: NULL\n");
+        return;
+    }
+    printf("Current List: ");
+    struct node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Reverse list
+void reverse(struct node** head) {
+    struct node* prev = NULL;
+    struct node* current = *head;
+    struct node* next = NULL;
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    *head = prev;
+    printf("List reversed successfully\n");
+}
+
+// Sort list ascending or descending
+void sortlist(struct node* head, int order) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    int swapped;
+    struct node* ptr1;
+    struct node* lptr = NULL;
+
+    do {
+        swapped = 0;
+        ptr1 = head;
+        while (ptr1->next != lptr) {
+            if ((order == 1 && ptr1->data > ptr1->next->data) ||
+                (order == 2 && ptr1->data < ptr1->next->data)) {
+                int temp = ptr1->data;
+                ptr1->data = ptr1->next->data;
+                ptr1->next->data = temp;
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+    if (order == 1)
+        printf("List sorted in ascending order\n");
+    else
+        printf("List sorted in descending order\n");
+}
+
+// Delete node by value (first occurrence)
+void deletebyvalue(struct node** head, int val) {
+    if (*head == NULL) {
+        printf("List is empty!\n");
+        return;
+    }
+    struct node* temp = *head;
+    struct node* prev = NULL;
+
+    if (temp != NULL && temp->data == val) {
+        *head = temp->next;
+        free(temp);
+        printf("Node with value %d deleted successfully\n", val);
+        return;
+    }
+    while (temp != NULL && temp->data != val) {
+        prev = temp;
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        printf("Value not found\n");
+        return;
+    }
+    prev->next = temp->next;
+    free(temp);
+    printf("Node with value %d deleted successfully\n", val);
+}
+
+int main() {
+    struct node* head = NULL;
+    int choice, value, order;
+
+    do {
+        printf("\n---------Menu----------\n");
+        printf("1. Create List\n");
+        printf("2. Traverse List\n");
+        printf("3. Reverse List\n");
+        printf("4. Sort List Ascending/Descending\n");
+        printf("5. Delete Node by Value\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                createlist(&head);
+                traverse(head);
+                break;
+            case 2:
+                traverse(head);
+                break;
+            case 3:
+                reverse(&head);
+                traverse(head);
+                break;
+            case 4:
+                printf("Enter 1 for Ascending, 2 for Descending: ");
+                scanf("%d", &order);
+                if (order == 1 || order == 2) {
+                    sortlist(head, order);
+                    traverse(head);
+                } else {
+                    printf("Invalid choice for sort order\n");
+                }
+                break;
+            case 5:
+                printf("Enter value to delete: ");
+                scanf("%d", &value);
+                deletebyvalue(&head, value);
+                traverse(head);
+                break;
+            case 6:
+                printf("Exiting program\n");
+                break;
+            default:
+                printf("Enter correct choice\n");
+        }
+    } while (choice != 6);
+
+    return 0;
+}
