@@ -1,0 +1,181 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+
+struct node {
+    int key;
+    struct node* left;
+    struct node* right;
+};
+
+// Function to create a new node
+struct node* createnode(int key) {
+    struct node* newnode = (struct node*)malloc(sizeof(struct node));
+    if(!newnode) {
+        printf("Memory allocation failed.\n");
+        return NULL;
+    }
+    newnode->key = key;
+    newnode->left = NULL;
+    newnode->right = NULL;
+    printf("Node created successfully.\n");
+    return newnode;
+}
+
+// Function to insert node in the tree at first available position (level order)
+void insertnode(struct node** root,int key){
+    struct node*newnode = createnode(key);
+    if(!newnode){
+        return;
+    }
+    if(*root == NULL){
+        *root = newnode;
+        printf("node %d inserted as a root node.",key);
+        return;
+    }
+    while(1){
+        struct node* temp = *root;
+        if(key<temp->key){
+            if(temp->left == NULL){
+                temp->left = createnode(key);
+                printf("Node %d inserted as left child of %d\n",key,temp->key);
+                return;
+            }
+            else{
+                temp = temp->left;
+            }
+        }
+        else if(key>temp->key){
+            if(temp->right == NULL){
+                temp->right = createnode(key);
+                printf("Node %d inserted as right child of %d\n",key,temp->key);
+                return;
+            }
+            else{
+                temp = temp->right;
+            }
+        }
+        else{
+            printf("Node with the %d key alredy exist.\n ",key);
+            return;
+        }
+    }
+}
+
+// Find minimum value node in the tree
+struct node* minvalue(struct node* node) {
+    struct node* temp = node;
+    while (temp && temp->left != NULL) {
+        temp = temp->left;
+    }
+    return temp;
+}
+
+//function for delete a node in tree
+struct node* deletenode(struct node* root, int key) {
+    if (root == NULL) {
+        printf("Element %d not found.\n", key);
+        return root;
+    }
+    if (key < root->key)
+        {
+        root->left = deletenode(root->left, key);
+    }
+    else if (key > root->key)
+        {
+        root->right = deletenode(root->right, key);
+    }
+    else {
+        // node to be deleted found
+        if (root->left == NULL)
+        {
+            struct node* temp = root->right;
+            printf("Node %d is deleted.\n", root->key);
+            free(root);
+            return temp;
+            }
+            else if (root->right == NULL)
+                {
+            struct node* temp = root->left;
+            printf("Node %d is deleted.\n", root->key);
+            free(root);
+            return temp;
+        }
+        struct node* temp = minvalue(root->right);
+        root->key = temp->key;
+        root->right = deletenode(root->right, temp->key);
+    }
+    return root;
+}
+//function for preorder in tree
+void preorder(struct node* root){
+    if(!root){
+        return;
+    }
+    printf("%d",root->key);
+    preorder(root->left);
+    preorder(root->right);
+}
+
+//function for inorder in tree
+void inorder(struct node* root){
+    if(!root){
+        return;
+    }
+    inorder(root->left);
+    printf("%d",root->key);
+    inorder(root->right);
+}
+
+//function for inorder in tree
+void postorder(struct node* root){
+    if(!root){
+        return;
+    }
+    postorder(root->left);
+    postorder(root->right);
+    printf("%d",root->key);
+}
+
+int main() {
+    struct node* root = NULL;
+    int choice, key;
+
+    do {
+        printf("\n---------Menu of binary search tree----------\n");
+        printf("1. Insert node\n");
+        printf("2. Display traversal\n");
+        printf("3. Delete node\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter value to insert: ");
+                scanf("%d", &key);
+                insertnode(&root, key);
+                break;
+            case 2:
+                printf("Preorder traversal: ");
+                preorder(root);
+                printf("Inorder traversal: ");
+                inorder(root);
+                printf("Postorder traversal: ");
+                postorder(root);
+                break;
+            case 3:
+                printf("Enter the value to delete: ");
+                scanf("%d",&key);
+                root = deletenode(root,key);
+                break;
+            case 4:
+                printf("Exiting the program...\n");
+                break;
+            default:
+                printf("Enter correct choice\n");
+        }
+    } while(choice != 4);
+
+    return 0;
+}
